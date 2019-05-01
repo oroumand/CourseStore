@@ -4,14 +4,16 @@ using CourseStore.Infrastructures.DataAccess.DbContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CourseStore.Infrastructures.DataAccess.Migrations
 {
     [DbContext(typeof(CourseStoreContext))]
-    partial class CourseStoreContextModelSnapshot : ModelSnapshot
+    [Migration("20190501230524_NameAndEmailOwnedType")]
+    partial class NameAndEmailOwnedType
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

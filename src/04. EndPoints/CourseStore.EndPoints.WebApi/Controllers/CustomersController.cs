@@ -4,6 +4,7 @@ using System.Linq;
 using CourseStore.Core.Domain.Contracts;
 using CourseStore.Core.Domain.Dtos;
 using CourseStore.Core.Domain.Entities;
+using CourseStore.Core.Domain.ValueObjects;
 using CourseStore.Infrastructures.DataAccess.Repositories;
 using CourseStore.Services.ApplicationServices;
 using Microsoft.AspNetCore.Mvc;
@@ -36,9 +37,10 @@ namespace CourseStore.EndPoints.WebApi.Controllers
             var dto = new CustomerDto
             {
                 Id = customer.Id,
-                FirstName = customer.FirstName,
-                LastName = customer.LastName,
-                Email = customer.Email,
+                
+                FirstName = customer.FullName.FirstName,
+                LastName = customer.FullName.LastName,
+                Email = customer.Email.Value,
                 MoneySpent = customer.MoneySpent,
                 Status = customer.Status,
                 StatusExpirationDate = customer.StatusExpirationDate,
@@ -64,9 +66,9 @@ namespace CourseStore.EndPoints.WebApi.Controllers
             var dtos = customers.Select(x => new CustomerInListDto
             {
                 Id = x.Id,
-                FirstName = x.FirstName,
-                LastName = x.LastName,
-                Email = x.Email,
+                FirstName = x.FullName.FirstName,
+                LastName = x.FullName.LastName,
+                Email = x.Email.Value,
                 MoneySpent = x.MoneySpent,
                 Status = x.Status.ToString(),
                 StatusExpirationDate = x.StatusExpirationDate
@@ -91,9 +93,8 @@ namespace CourseStore.EndPoints.WebApi.Controllers
 
                 var customer = new Customer
                 {
-                    FirstName = item.FirstName,
-                    LastName = item.LastName,
-                    Email = item.Email,
+                    FullName = new FullName(item.FirstName,item.LastName),
+                    Email = new Email(item.Email),
                     MoneySpent = 0,
                     Status = CustomerStatus.Regular,
                     StatusExpirationDate = null
@@ -126,8 +127,7 @@ namespace CourseStore.EndPoints.WebApi.Controllers
                     return BadRequest("شناسه مشتری قابل قبول نیست: " + id);
                 }
 
-                customer.FirstName = item.FirstName;
-                customer.LastName = item.LastName;
+                customer.FullName = new FullName(item.FirstName, item.LastName);
 
                 _customerRepository.Save();
 

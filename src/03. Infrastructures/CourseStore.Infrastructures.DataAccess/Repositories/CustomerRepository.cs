@@ -15,7 +15,7 @@ namespace CourseStore.Infrastructures.DataAccess.Repositories
         public Customer GetByEmail(string email)
         {
             return _dbContext.Customers.Include(c=>c.PurchasedCourses).
-                ThenInclude(c=>c.Course).FirstOrDefault(c => c.Email == email);
+                ThenInclude(c=>c.Course).FirstOrDefault(c => c.Email.Value == email);
         }
         public override Customer GetById(long id)
         {
