@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using CourseStore.Core.Domain.Contracts;
+using CourseStore.Core.Domain.Dtos;
 using CourseStore.Core.Domain.Entities;
 using CourseStore.Infrastructures.DataAccess.Repositories;
 using CourseStore.Services.ApplicationServices;
@@ -32,14 +33,44 @@ namespace CourseStore.EndPoints.WebApi.Controllers
             {
                 return NotFound();
             }
-
+            var dto = new CustomerDto
+            {
+                Id = customer.Id,
+                FirstName = customer.FirstName,
+                LastName = customer.LastName,
+                Email = customer.Email,
+                MoneySpent = customer.MoneySpent,
+                Status = customer.Status,
+                StatusExpirationDate = customer.StatusExpirationDate,
+                PurchasedCourses = customer.PurchasedCourses.Select(x => new PurchasedCourseDto
+                {
+                    Price = x.Price,
+                    ExpirationDate = x.ExpirationDate,
+                    PurchaseDate = x.PurchaseDate,
+                    Course = new CourseDto
+                    {
+                        Id = x.CourseId,
+                        Name = x.Course.Name
+                    }
+                }).ToList()
+            };
             return Json(customer);
         }
 
         [HttpGet]
         public JsonResult GetList()
         {
-            IReadOnlyList<Customer> customers = _customerRepository.GetList();
+            var customers = _customerRepository.GetList();
+            var dtos = customers.Select(x => new CustomerInListDto
+            {
+                Id = x.Id,
+                FirstName = x.FirstName,
+                LastName = x.LastName,
+                Email = x.Email,
+                MoneySpent = x.MoneySpent,
+                Status = x.Status.ToString(),
+                StatusExpirationDate = x.StatusExpirationDate
+            }).ToList();
             return Json(customers);
         }
 
@@ -119,7 +150,7 @@ namespace CourseStore.EndPoints.WebApi.Controllers
                     return BadRequest("شناسه مشتری قابل قبول نیست: " + id);
                 }
 
-                if (customer.PurchasedCourses.Any(x => x.CourseId== course.Id && (x.ExpirationDate == null || x.ExpirationDate.Value >= DateTime.UtcNow)))
+                if (customer.PurchasedCourses.Any(x => x.CourseId == course.Id && (x.ExpirationDate == null || x.ExpirationDate.Value >= DateTime.UtcNow)))
                 {
                     return BadRequest("دوره منتخب در حال حاضر ثبت شده است: " + course.Name);
                 }
