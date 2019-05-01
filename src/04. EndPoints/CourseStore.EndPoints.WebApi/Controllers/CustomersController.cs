@@ -4,6 +4,7 @@ using System.Linq;
 using CourseStore.Core.Domain.Contracts;
 using CourseStore.Core.Domain.Dtos;
 using CourseStore.Core.Domain.Entities;
+using CourseStore.Core.Domain.Utilities.CourseStore.Core.Domain.Utilities;
 using CourseStore.Core.Domain.ValueObjects;
 using CourseStore.Infrastructures.DataAccess.Repositories;
 using CourseStore.Services.ApplicationServices;
@@ -81,20 +82,21 @@ namespace CourseStore.EndPoints.WebApi.Controllers
         {
             try
             {
-                if (!ModelState.IsValid)
-                {
-                    return BadRequest(ModelState);
-                }
+                var fullName = FullName.Create(item.FirstName, item.LastName);
+                var email = Email.Create(item.Email);
+                var result = Result.Combine(fullName, email);
+                if (result.IsFailure)
+                    return BadRequest(result.Error);
 
-                if (_customerRepository.GetByEmail(item.Email) != null)
+                if (_customerRepository.GetByEmail(email.Value) != null)
                 {
                     return BadRequest("ایمیل ورودی در حال حاضر ثبت شده است: " + item.Email);
                 }
 
                 var customer = new Customer
                 {
-                    FullName = new FullName(item.FirstName,item.LastName),
-                    Email = new Email(item.Email),
+                    FullName = fullName.Value,
+                    Email = email.Value,
                     MoneySpent = 0,
                     Status = CustomerStatus.Regular,
                     StatusExpirationDate = null
@@ -116,10 +118,9 @@ namespace CourseStore.EndPoints.WebApi.Controllers
         {
             try
             {
-                if (!ModelState.IsValid)
-                {
-                    return BadRequest(ModelState);
-                }
+                var fullName = FullName.Create(item.FirstName, item.LastName);
+                if (fullName.IsFailure)
+                    return BadRequest(fullName.Error);
 
                 Customer customer = _customerRepository.GetById(id);
                 if (customer == null)
@@ -127,7 +128,7 @@ namespace CourseStore.EndPoints.WebApi.Controllers
                     return BadRequest("شناسه مشتری قابل قبول نیست: " + id);
                 }
 
-                customer.FullName = new FullName(item.FirstName, item.LastName);
+                customer.FullName = fullName.Value;
 
                 _customerRepository.Save();
 

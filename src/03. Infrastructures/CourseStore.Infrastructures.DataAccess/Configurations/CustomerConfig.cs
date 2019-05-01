@@ -13,7 +13,7 @@ namespace CourseStore.Infrastructures.DataAccess.Configurations
                 d.Property(e=>e.FirstName).HasMaxLength(100).IsRequired().HasColumnName("FirstName");
                 d.Property(e=>e.LastName).HasMaxLength(100).IsRequired().HasColumnName("LastName");
             });
-            builder.Property(c => c.Email).HasConversion(c => c.Value, d => new Core.Domain.ValueObjects.Email(d));
+            builder.Property(c => c.Email).HasConversion(c => c.Value, d =>  Core.Domain.ValueObjects.Email.Create(d).Value);
             //builder.HasData(
             //    new Customer
             //    {

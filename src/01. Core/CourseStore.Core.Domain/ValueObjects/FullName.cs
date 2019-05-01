@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CourseStore.Core.Domain.Utilities.CourseStore.Core.Domain.Utilities;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -8,10 +9,29 @@ namespace CourseStore.Core.Domain.ValueObjects
     {
         public string FirstName { get; }
         public string LastName { get; }
-        public FullName(string firstName, string lastName)
+        private FullName(string firstName, string lastName)
         {
             FirstName = firstName;
             LastName = lastName;
+        }
+        protected FullName() { }
+
+        public static Result<FullName> Create(string firstName,string lastName)
+        {
+            if (string.IsNullOrWhiteSpace(firstName))
+                return Result.Fail<FullName>("برای نام مقدار لازم است");
+            if (string.IsNullOrWhiteSpace(lastName))
+                return Result.Fail<FullName>("برای نام خانوادگی مقدار لازم است");
+            if (firstName.Length > 100)
+            {
+                return Result.Fail<FullName>("طول نام حداکثر 100 کاراکتر می‌باشد.");
+
+            }
+            if (lastName.Length > 100)
+            {
+                return Result.Fail<FullName>("طول نام خانوادگی حداکثر 100 کاراکتر می‌باشد.");
+            }
+            return Result.Ok(new FullName(firstName, lastName));
         }
 
         protected override int GetHashCodeCore()
