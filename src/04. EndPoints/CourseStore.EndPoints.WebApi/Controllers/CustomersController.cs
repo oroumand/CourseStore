@@ -75,7 +75,7 @@ namespace CourseStore.EndPoints.WebApi.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] Customer item)
+        public IActionResult Create([FromBody] CreateCustomerDto item)
         {
             try
             {
@@ -89,9 +89,16 @@ namespace CourseStore.EndPoints.WebApi.Controllers
                     return BadRequest("ایمیل ورودی در حال حاضر ثبت شده است: " + item.Email);
                 }
 
-                item.Id = 0;
-                item.Status = CustomerStatus.Regular;
-                _customerRepository.Add(item);
+                var customer = new Customer
+                {
+                    FirstName = item.FirstName,
+                    LastName = item.LastName,
+                    Email = item.Email,
+                    MoneySpent = 0,
+                    Status = CustomerStatus.Regular,
+                    StatusExpirationDate = null
+                };
+                _customerRepository.Add(customer);
                 _customerRepository.Save();
 
                 return Ok();
@@ -104,7 +111,7 @@ namespace CourseStore.EndPoints.WebApi.Controllers
 
         [HttpPut]
         [Route("{id}")]
-        public IActionResult Update(long id, [FromBody] Customer item)
+        public IActionResult Update(long id, [FromBody] UpdateCustomerDto item)
         {
             try
             {
