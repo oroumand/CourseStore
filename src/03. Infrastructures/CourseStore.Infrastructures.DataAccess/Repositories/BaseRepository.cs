@@ -23,7 +23,7 @@ namespace CourseStore.Infrastructures.DataAccess.Repositories
             _dbContext.Set<TEntity>().Add(entity);
         }
 
-        public TEntity GetById(long id)
+        public virtual TEntity GetById(long id)
         {
             return _dbContext.Set<TEntity>().Find(id);
         }
