@@ -9,10 +9,10 @@ namespace CourseStore.Core.Domain.Dtos
     {
         [Required]
         [MaxLength(100, ErrorMessage = "حداکثر طول نام 100 کاراکتر است.")]
-        public virtual string FirstName { get; set; }
+        public string FirstName { get; set; }
 
         [Required]
         [MaxLength(100, ErrorMessage = "حداکثر طول نام خانوادگی 100 کاراکتر است.")]
-        public virtual string LastName { get; set; }
+        public string LastName { get; set; }
     }
 }

@@ -11,9 +11,9 @@ namespace CourseStore.Core.Domain.Entities
     {
         public FullName FullName{ get; set; }
         public  Email Email { get; set; }
-        public virtual CustomerStatus Status { get; set; }
-        public virtual DateTime? StatusExpirationDate { get; set; }
-        public virtual decimal MoneySpent { get; set; }
-        public virtual IList<PurchasedCourse> PurchasedCourses { get; set; }
+        public CustomerStatus Status { get; set; }
+        public DateTime? StatusExpirationDate { get; set; }
+        public decimal MoneySpent { get; set; }
+        public IList<PurchasedCourse> PurchasedCourses { get; set; }
     }
 }

@@ -18,17 +18,17 @@ namespace CourseStore.Infrastructures.DataAccess.Repositories
         {
             this._dbContext = dbContext;
         }
-        public virtual void Add(TEntity entity)
+        public void Add(TEntity entity)
         {
             _dbContext.Set<TEntity>().Add(entity);
         }
 
-        public virtual TEntity GetById(long id)
+        public TEntity GetById(long id)
         {
             return _dbContext.Set<TEntity>().Find(id);
         }
 
-        public virtual List<TEntity> GetList()
+        public List<TEntity> GetList()
         {
             return _dbContext.Set<TEntity>().ToList();
         }

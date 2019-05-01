@@ -13,23 +13,23 @@ namespace CourseStore.Core.Domain.Dtos
         public long Id { get; set; }
         [Required]
         [MaxLength(100, ErrorMessage = "حداکثر طول نام 100 کاراکتر است.")]
-        public virtual string FirstName { get; set; }
+        public string FirstName { get; set; }
 
         [Required]
         [MaxLength(100, ErrorMessage = "حداکثر طول نام خانوادگی 100 کاراکتر است.")]
-        public virtual string LastName { get; set; }
+        public string LastName { get; set; }
 
         [Required]
         [RegularExpression(@"^(.+)@(.+)$", ErrorMessage = "ایمیل وارد شده قابل قبول نمی‌باشد.")]
-        public virtual string Email { get; set; }
+        public string Email { get; set; }
 
         [JsonConverter(typeof(StringEnumConverter))]
-        public virtual CustomerStatus Status { get; set; }
+        public CustomerStatus Status { get; set; }
 
-        public virtual DateTime? StatusExpirationDate { get; set; }
+        public DateTime? StatusExpirationDate { get; set; }
 
-        public virtual decimal MoneySpent { get; set; }
+        public decimal MoneySpent { get; set; }
 
-        public virtual IList<PurchasedCourseDto> PurchasedCourses { get; set; }
+        public IList<PurchasedCourseDto> PurchasedCourses { get; set; }
     }
 }
