@@ -1,4 +1,5 @@
 ﻿using CourseStore.Core.Domain.Entities;
+using CourseStore.Core.Domain.ValueObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,17 +16,17 @@ namespace CourseStore.Services.ApplicationServices
             _courseService = courseService;
         }
 
-        private decimal CalculatePrice(CustomerStatus status, DateTime? statusExpirationDate, LicensingModel licensingModel)
+        private Rial CalculatePrice(CustomerStatus status, DateTime? statusExpirationDate, LicensingModel licensingModel)
         {
-            decimal price;
+            Rial price;
             switch (licensingModel)
             {
                 case LicensingModel.TwoDays:
-                    price = 4;
+                    price = Rial.of(4);
                     break;
 
                 case LicensingModel.LifeLong:
-                    price = 8;
+                    price = Rial.of(8);
                     break;
 
                 default:
@@ -43,7 +44,7 @@ namespace CourseStore.Services.ApplicationServices
         public void PurchaseCourse(Customer customer, Course course)
         {
             DateTime? expirationDate = _courseService.GetExpirationDate(course.LicensingModel);
-            decimal price = CalculatePrice(customer.Status, customer.StatusExpirationDate, course.LicensingModel);
+            Rial price = CalculatePrice(customer.Status, customer.StatusExpirationDate, course.LicensingModel);
 
             var purchasedMovie = new PurchasedCourse
             {

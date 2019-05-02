@@ -38,11 +38,11 @@ namespace CourseStore.EndPoints.WebApi.Controllers
             var dto = new CustomerDto
             {
                 Id = customer.Id,
-                
+
                 FirstName = customer.FullName.FirstName,
                 LastName = customer.FullName.LastName,
                 Email = customer.Email.Value,
-                MoneySpent = customer.MoneySpent,
+                MoneySpent = customer.MoneySpent.Value,
                 Status = customer.Status,
                 StatusExpirationDate = customer.StatusExpirationDate,
                 PurchasedCourses = customer.PurchasedCourses.Select(x => new PurchasedCourseDto
@@ -70,7 +70,7 @@ namespace CourseStore.EndPoints.WebApi.Controllers
                 FirstName = x.FullName.FirstName,
                 LastName = x.FullName.LastName,
                 Email = x.Email.Value,
-                MoneySpent = x.MoneySpent,
+                MoneySpent = x.MoneySpent.Value,
                 Status = x.Status.ToString(),
                 StatusExpirationDate = x.StatusExpirationDate
             }).ToList();
@@ -97,7 +97,7 @@ namespace CourseStore.EndPoints.WebApi.Controllers
                 {
                     FullName = fullName.Value,
                     Email = email.Value,
-                    MoneySpent = 0,
+                    MoneySpent = Rial.of(0),
                     Status = CustomerStatus.Regular,
                     StatusExpirationDate = null
                 };
