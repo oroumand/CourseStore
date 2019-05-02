@@ -43,7 +43,7 @@ namespace CourseStore.Services.ApplicationServices
 
         public void PurchaseCourse(Customer customer, Course course)
         {
-            ExpirationDate expirationDate = _courseService.GetExpirationDate(course.LicensingModel);
+            ExpirationDate expirationDate = course.GetExpirationDate();
             Rial price = CalculatePrice(customer.Status, course.LicensingModel);
             customer.AddCourse(course,expirationDate,price);
             
