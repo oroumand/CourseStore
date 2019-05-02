@@ -183,8 +183,7 @@ namespace CourseStore.EndPoints.WebApi.Controllers
                 {
                     return BadRequest("در حال حاضر کاربر در وضعیت پیشرفته وجود دارد.");
                 }
-
-                bool success = _customerService.PromoteCustomer(customer);
+                bool success = customer.Promote();
                 if (!success)
                 {
                     return BadRequest("امکان ارتقا وضعیت کاربر وجود ندارد.");

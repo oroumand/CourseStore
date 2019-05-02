@@ -49,19 +49,6 @@ namespace CourseStore.Services.ApplicationServices
             
         }
 
-        public bool PromoteCustomer(Customer customer)
-        {
-            // حداقل باید در ماه گذشته 2 دوره فعال داشته باشد
-            if (customer.PurchasedCourses.Count(x => x.ExpirationDate == ExpirationDate.Infinite || x.ExpirationDate.Date >= DateTime.UtcNow.AddDays(-30)) < 2)
-                return false;
 
-            // حد اقل 100 هزار تومان در طی سال گذشته هزینه کرده باشد
-            if (customer.PurchasedCourses.Where(x => x.PurchaseDate > DateTime.UtcNow.AddYears(-1)).Sum(x => x.Price) < 100m)
-                return false;
-
-            customer.Status = CustomerStatus.Promote();
-
-            return true;
-        }
     }
 }
