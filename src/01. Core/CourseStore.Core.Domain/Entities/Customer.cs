@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using CourseStore.Core.Domain.ValueObjects;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System;
 using System.Collections.Generic;
@@ -8,17 +9,9 @@ namespace CourseStore.Core.Domain.Entities
 {
     public class Customer : BaseEntity
     {
-        [Required]
-        [MaxLength(100, ErrorMessage = "حداکثر طول نام 100 کاراکتر است.")]
-        public string FirstName { get; set; }
+        public FullName FullName{ get; set; }
 
-        [Required]
-        [MaxLength(100, ErrorMessage = "حداکثر طول نام خانوادگی 100 کاراکتر است.")]
-        public string LastName { get; set; }
-
-        [Required]
-        [RegularExpression(@"^(.+)@(.+)$", ErrorMessage = "ایمیل وارد شده قابل قبول نمی‌باشد.")]
-        public string Email { get; set; }
+        public Email Email { get; set; }
 
         [JsonConverter(typeof(StringEnumConverter))]
         public CustomerStatus Status { get; set; }
@@ -28,5 +21,10 @@ namespace CourseStore.Core.Domain.Entities
         public decimal MoneySpent { get; set; }
 
         public IList<PurchasedCourse> PurchasedCourses { get; set; }
+
+        public void SetFullName(FullName value)
+        {
+            FullName = value;
+        }
     }
 }

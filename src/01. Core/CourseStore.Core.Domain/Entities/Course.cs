@@ -6,7 +6,6 @@ namespace CourseStore.Core.Domain.Entities
     {
         public string Name { get; set; }
 
-        [JsonIgnore]
         public LicensingModel LicensingModel { get; set; }
     }
 }
