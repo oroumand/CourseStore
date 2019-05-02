@@ -16,7 +16,7 @@ namespace CourseStore.Services.ApplicationServices
             _courseService = courseService;
         }
 
-        private decimal CalculatePrice(CustomerStatus status, DateTime? statusExpirationDate, LicensingModel licensingModel)
+        private decimal CalculatePrice(CustomerStatus status, ExpirationDate statusExpirationDate, LicensingModel licensingModel)
         {
             decimal price;
             switch (licensingModel)
@@ -33,7 +33,7 @@ namespace CourseStore.Services.ApplicationServices
                     throw new ArgumentOutOfRangeException();
             }
 
-            if (status == CustomerStatus.Advanced && (statusExpirationDate == null || statusExpirationDate.Value >= DateTime.UtcNow))
+            if (status.IsAdvanced && (!statusExpirationDate.IsExpired))
             {
                 price = price * 0.75m;
             }
@@ -44,7 +44,7 @@ namespace CourseStore.Services.ApplicationServices
         public void PurchaseCourse(Customer customer, Course course)
         {
             var expirationDate = _courseService.GetExpirationDate(course.LicensingModel);
-            decimal price = CalculatePrice(customer.Status, customer.StatusExpirationDate, course.LicensingModel);
+            decimal price = CalculatePrice(customer.Status, customer.Status.ExpirationDate, course.LicensingModel);
 
             var purchasedMovie = new PurchasedCourse
             {
@@ -58,20 +58,5 @@ namespace CourseStore.Services.ApplicationServices
             customer.MoneySpent += Rial.of(price);
         }
 
-        public bool PromoteCustomer(Customer customer)
-        {
-            // حداقل باید در ماه گذشته 2 دوره فعال داشته باشد
-            if (customer.PurchasedCourses.Count(x => x.ExpirationDate == ExpirationDate.Infinite || x.ExpirationDate.Date >= DateTime.UtcNow.AddDays(-30)) < 2)
-                return false;
-
-            // حد اقل 100 هزار تومان در طی سال گذشته هزینه کرده باشد
-            if (customer.PurchasedCourses.Where(x => x.PurchaseDate > DateTime.UtcNow.AddYears(-1)).Sum(x => x.Price) < 100m)
-                return false;
-
-            customer.Status = CustomerStatus.Advanced;
-            customer.StatusExpirationDate = ExpirationDate.Create(DateTime.UtcNow.AddYears(1)).Value;
-
-            return true;
-        }
     }
 }

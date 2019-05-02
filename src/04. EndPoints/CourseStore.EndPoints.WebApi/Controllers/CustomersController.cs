@@ -43,8 +43,8 @@ namespace CourseStore.EndPoints.WebApi.Controllers
                 LastName = customer.FullName.LastName,
                 Email = customer.Email.Value,
                 MoneySpent = customer.MoneySpent,
-                Status = customer.Status,
-                StatusExpirationDate = customer.StatusExpirationDate,
+                Status = customer.Status.Type,
+                StatusExpirationDate = customer.Status.ExpirationDate,
                 PurchasedCourses = customer.PurchasedCourses.Select(x => new PurchasedCourseDto
                 {
                     Price = x.Price,
@@ -72,7 +72,7 @@ namespace CourseStore.EndPoints.WebApi.Controllers
                 Email = x.Email.Value,
                 MoneySpent = x.MoneySpent,
                 Status = x.Status.ToString(),
-                StatusExpirationDate = x.StatusExpirationDate
+                StatusExpirationDate = x.Status.ExpirationDate
             }).ToList();
             return Json(dtos);
         }
@@ -184,12 +184,12 @@ namespace CourseStore.EndPoints.WebApi.Controllers
                     return BadRequest("شناسه مشتری قابل قبول نیست: " + id);
                 }
 
-                if (customer.Status == CustomerStatus.Advanced && (!customer.StatusExpirationDate.IsExpired))
+                if (customer.Status.IsAdvanced && (!customer.Status.ExpirationDate.IsExpired))
                 {
                     return BadRequest("در حال حاضر کاربر در وضعیت پیشرفته وجود دارد.");
                 }
 
-                bool success = _customerService.PromoteCustomer(customer);
+                bool success = customer.Promote();
                 if (!success)
                 {
                     return BadRequest("امکان ارتقا وضعیت کاربر وجود ندارد.");

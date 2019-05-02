@@ -19,7 +19,11 @@ namespace CourseStore.Infrastructures.DataAccess.Configurations
 
             builder.Property(c => c.Email).HasConversion(c => c.Value, d => Email.Create(d).Value);
             builder.Property(c => c.MoneySpent).HasConversion(c => c.Value, d => Rial.of(d));
-            builder.Property(c => c.StatusExpirationDate).HasConversion(c => (DateTime?)c, d => (ExpirationDate)d);
+            builder.OwnsOne(c => c.Status, d =>
+            {
+                d.Property(e => e.Type).IsRequired().HasColumnName("Status");
+                d.Property(e => e.ExpirationDate).HasConversion(c => c.Date, c => (ExpirationDate)c).HasColumnName("StatusExpirationDate");
+            });
         }
     }
 }
