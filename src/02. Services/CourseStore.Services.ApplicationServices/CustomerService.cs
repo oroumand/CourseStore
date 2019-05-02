@@ -21,11 +21,11 @@ namespace CourseStore.Services.ApplicationServices
             switch (licensingModel)
             {
                 case LicensingModel.TwoDays:
-                    price = 4;
+                    price = 4000;
                     break;
 
                 case LicensingModel.LifeLong:
-                    price = 8;
+                    price = 8000;
                     break;
 
                 default:

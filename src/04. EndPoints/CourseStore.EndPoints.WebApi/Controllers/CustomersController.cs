@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using CourseStore.Core.Domain.Contracts;
+using CourseStore.Core.Domain.Dtos;
 using CourseStore.Core.Domain.Entities;
 using CourseStore.Infrastructures.DataAccess.Repositories;
 using CourseStore.Services.ApplicationServices;
@@ -32,19 +33,50 @@ namespace CourseStore.EndPoints.WebApi.Controllers
             {
                 return NotFound();
             }
+            var dto = new CustomerDto
+            {
+                Id = customer.Id,
 
-            return Json(customer);
+                FirstName = customer.FirstName,
+                LastName = customer.LastName,
+                Email = customer.Email,
+                MoneySpent = customer.MoneySpent,
+                Status = customer.Status,
+                StatusExpirationDate = customer.StatusExpirationDate,
+                PurchasedCourses = customer.PurchasedCourses.Select(x => new PurchasedCourseDto
+                {
+                    Price = x.Price,
+                    ExpirationDate = x.ExpirationDate,
+                    PurchaseDate = x.PurchaseDate,
+                    Course = new CourseDto
+                    {
+                        Id = x.CourseId,
+                        Name = x.Course.Name
+                    }
+                }).ToList()
+            };
+            return Json(dto);
         }
 
         [HttpGet]
         public JsonResult GetList()
         {
-            IReadOnlyList<Customer> customers = _customerRepository.GetList();
-            return Json(customers);
+            var customers = _customerRepository.GetList();
+            var dtos = customers.Select(x => new CustomerInListDto
+            {
+                Id = x.Id,
+                FirstName = x.FirstName,
+                LastName = x.LastName,
+                Email = x.Email,
+                MoneySpent = x.MoneySpent,
+                Status = x.Status.ToString(),
+                StatusExpirationDate = x.StatusExpirationDate
+            }).ToList();
+            return Json(dtos);
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] Customer item)
+        public IActionResult Create([FromBody] CreateCustomerDto item)
         {
             try
             {
@@ -57,10 +89,15 @@ namespace CourseStore.EndPoints.WebApi.Controllers
                 {
                     return BadRequest("ایمیل ورودی در حال حاضر ثبت شده است: " + item.Email);
                 }
-
-                item.Id = 0;
-                item.Status = CustomerStatus.Regular;
-                _customerRepository.Add(item);
+                var customer = new Customer
+                {
+                    FirstName = item.FirstName,
+                    LastName = item.LastName,
+                    Email = item.Email,
+                    Id = 0,
+                    Status = CustomerStatus.Regular
+                };
+                _customerRepository.Add(customer);
                 _customerRepository.Save();
 
                 return Ok();
@@ -73,7 +110,7 @@ namespace CourseStore.EndPoints.WebApi.Controllers
 
         [HttpPut]
         [Route("{id}")]
-        public IActionResult Update(long id, [FromBody] Customer item)
+        public IActionResult Update(long id, [FromBody] UpdateCustomerDto item)
         {
             try
             {
