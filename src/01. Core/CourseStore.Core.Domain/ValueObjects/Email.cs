@@ -6,12 +6,12 @@ namespace CourseStore.Core.Domain.ValueObjects
 {
     public class Email : BaseValueObject<Email>
     {
-        public string Value { get; }
+        public string Value { get; private set; }
         private Email(string value)
         {
             Value = value;
         }
-        protected Email() { }
+        public Email() { }
         public static Result<Email> Create(string email)
         {
             if (string.IsNullOrWhiteSpace(email))

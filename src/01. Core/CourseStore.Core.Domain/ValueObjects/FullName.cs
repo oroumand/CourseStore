@@ -7,16 +7,16 @@ namespace CourseStore.Core.Domain.ValueObjects
 {
     public class FullName : BaseValueObject<FullName>
     {
-        public string FirstName { get; }
-        public string LastName { get; }
+        public string FirstName { get; private set; }
+        public string LastName { get; private set; }
         private FullName(string firstName, string lastName)
         {
             FirstName = firstName;
             LastName = lastName;
         }
-        protected FullName() { }
+        public FullName() { }
 
-        public static Result<FullName> Create(string firstName,string lastName)
+        public static Result<FullName> Create(string firstName, string lastName)
         {
             if (string.IsNullOrWhiteSpace(firstName))
                 return Result.Fail<FullName>("برای نام مقدار لازم است");

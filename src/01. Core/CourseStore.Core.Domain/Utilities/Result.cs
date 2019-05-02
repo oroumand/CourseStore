@@ -42,7 +42,7 @@ namespace CourseStore.Core.Domain.Utilities
             }
             public static Result<T> Ok<T>(T value)
             {
-                return new Result<T>(value, false, string.Empty);
+                return new Result<T>(value, true, string.Empty);
             }
             public static Result Combine(params Result[] results)
             {
