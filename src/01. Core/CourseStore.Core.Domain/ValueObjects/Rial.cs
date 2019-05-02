@@ -8,6 +8,8 @@ namespace CourseStore.Core.Domain.ValueObjects
     public class Rial : BaseValueObject<Rial>
     {
         public decimal Value { get; private set; }
+        public bool IsZero => Value == 0;
+
         private Rial(decimal value)
         {
             Value = value;

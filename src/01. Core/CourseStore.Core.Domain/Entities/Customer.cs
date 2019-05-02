@@ -30,14 +30,7 @@ namespace CourseStore.Core.Domain.Entities
 
         public void AddCourse(Course course, ExpirationDate expirationDate, Rial price)
         {
-            var purchasedCourse = new PurchasedCourse
-            {
-                CourseId = course.Id,
-                CustomerId = Id,
-                ExpirationDate = expirationDate,
-                Price = price
-            };
-
+            var purchasedCourse = new PurchasedCourse(course, this, price, expirationDate);
             _purchasedCourses.Add(purchasedCourse);
             MoneySpent += price;
         }

@@ -6,16 +6,32 @@ namespace CourseStore.Core.Domain.Entities
 {
     public class PurchasedCourse : BaseEntity
     {
-        public long CourseId { get; set; }
+        public Course Course { get; private  set; }
 
-        public Course Course { get; set; }
+        public Customer Customer { get; private  set; }
 
-        public long CustomerId { get; set; }
+        public decimal Price { get; private  set; }
 
-        public decimal Price { get; set; }
+        public DateTime PurchaseDate { get; private  set; }
 
-        public DateTime PurchaseDate { get; set; }
+        public ExpirationDate ExpirationDate { get; private set; }
+        internal PurchasedCourse(Course course,Customer customer,Rial price, ExpirationDate expirationDate)
+        {
+            if (price == null || price.IsZero)
+                throw new ArgumentException(nameof(price));
+            if(expirationDate== null || expirationDate.IsExpired)
+            {
+                throw new ArgumentException(nameof(expirationDate));
 
-        public ExpirationDate ExpirationDate { get; set; }
+            }
+            Course = course ?? throw new ArgumentNullException(nameof(course));
+            Customer = customer ?? throw new ArgumentNullException(nameof(customer));
+            Price = price;
+            ExpirationDate = expirationDate;
+        }
+        private PurchasedCourse()
+        {
+
+        }
     }
 }

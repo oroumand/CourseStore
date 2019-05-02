@@ -52,7 +52,7 @@ namespace CourseStore.EndPoints.WebApi.Controllers
                     PurchaseDate = x.PurchaseDate,
                     Course = new CourseDto
                     {
-                        Id = x.CourseId,
+                        Id = x.Course.Id,
                         Name = x.Course.Name
                     }
                 }).ToList()
@@ -150,7 +150,7 @@ namespace CourseStore.EndPoints.WebApi.Controllers
                     return BadRequest("شناسه مشتری قابل قبول نیست: " + id);
                 }
 
-                if (customer.PurchasedCourses.Any(x => x.CourseId == course.Id && !x.ExpirationDate.IsExpired))
+                if (customer.PurchasedCourses.Any(x => x.Course?.Id == course.Id && !x.ExpirationDate.IsExpired))
                 {
                     return BadRequest("دوره منتخب در حال حاضر ثبت شده است: " + course.Name);
                 }
