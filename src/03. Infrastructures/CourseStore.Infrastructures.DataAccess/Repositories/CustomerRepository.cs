@@ -20,8 +20,10 @@ namespace CourseStore.Infrastructures.DataAccess.Repositories
         }
         public override Customer GetById(long id)
         {
-            return _dbContext.Customers.Include(c => c.PurchasedCourses).
+            var result = 
+             _dbContext.Customers.Include(c => c.PurchasedCourses).
                ThenInclude(c => c.Course).FirstOrDefault(c => c.Id == id);
+            return result;
         }
     }
 }

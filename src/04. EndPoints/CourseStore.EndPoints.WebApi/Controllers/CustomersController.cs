@@ -43,8 +43,8 @@ namespace CourseStore.EndPoints.WebApi.Controllers
                 LastName = customer.FullName.LastName,
                 Email = customer.Email.Value,
                 MoneySpent = customer.MoneySpent.Value,
-                Status = customer.Status,
-                StatusExpirationDate = customer.StatusExpirationDate,
+                Status = customer.Status.Type,
+                StatusExpirationDate = customer.Status.ExpirationDate,
                 PurchasedCourses = customer.PurchasedCourses.Select(x => new PurchasedCourseDto
                 {
                     Price = x.Price,
@@ -71,8 +71,8 @@ namespace CourseStore.EndPoints.WebApi.Controllers
                 LastName = x.FullName.LastName,
                 Email = x.Email.Value,
                 MoneySpent = x.MoneySpent.Value,
-                Status = x.Status.ToString(),
-                StatusExpirationDate = x.StatusExpirationDate
+                Status = x.Status.Type.ToString(),
+                StatusExpirationDate = x.Status.ExpirationDate
             }).ToList();
             return Json(customers);
         }
@@ -93,14 +93,7 @@ namespace CourseStore.EndPoints.WebApi.Controllers
                     return BadRequest("ایمیل ورودی در حال حاضر ثبت شده است: " + item.Email);
                 }
 
-                var customer = new Customer
-                {
-                    FullName = fullName.Value,
-                    Email = email.Value,
-                    MoneySpent = Rial.of(0),
-                    Status = CustomerStatus.Regular,
-                    StatusExpirationDate = null
-                };
+                var customer = new Customer(fullName.Value, email.Value);
                 _customerRepository.Add(customer);
                 _customerRepository.Save();
 
@@ -128,8 +121,7 @@ namespace CourseStore.EndPoints.WebApi.Controllers
                     return BadRequest("شناسه مشتری قابل قبول نیست: " + id);
                 }
 
-                customer.FullName = fullName.Value;
-
+                customer.SetFullName( fullName.Value);
                 _customerRepository.Save();
 
                 return Ok();
@@ -187,7 +179,7 @@ namespace CourseStore.EndPoints.WebApi.Controllers
                     return BadRequest("شناسه مشتری قابل قبول نیست: " + id);
                 }
 
-                if (customer.Status == CustomerStatus.Advanced && !customer.StatusExpirationDate.IsExpired)
+                if (customer.Status.IsAdvanced)
                 {
                     return BadRequest("در حال حاضر کاربر در وضعیت پیشرفته وجود دارد.");
                 }

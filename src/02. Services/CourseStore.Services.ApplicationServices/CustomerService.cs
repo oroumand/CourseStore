@@ -16,7 +16,7 @@ namespace CourseStore.Services.ApplicationServices
             _courseService = courseService;
         }
 
-        private Rial CalculatePrice(CustomerStatus status, DateTime? statusExpirationDate, LicensingModel licensingModel)
+        private Rial CalculatePrice(CustomerStatus status, LicensingModel licensingModel)
         {
             Rial price;
             switch (licensingModel)
@@ -33,7 +33,7 @@ namespace CourseStore.Services.ApplicationServices
                     throw new ArgumentOutOfRangeException();
             }
 
-            if (status == CustomerStatus.Advanced && (statusExpirationDate == null || statusExpirationDate.Value >= DateTime.UtcNow))
+            if (status.IsAdvanced)
             {
                 price = price * 0.75m;
             }
@@ -44,18 +44,9 @@ namespace CourseStore.Services.ApplicationServices
         public void PurchaseCourse(Customer customer, Course course)
         {
             ExpirationDate expirationDate = _courseService.GetExpirationDate(course.LicensingModel);
-            Rial price = CalculatePrice(customer.Status, customer.StatusExpirationDate, course.LicensingModel);
-
-            var purchasedMovie = new PurchasedCourse
-            {
-                CourseId = course.Id,
-                CustomerId = customer.Id,
-                ExpirationDate = expirationDate,
-                Price = price
-            };
-
-            customer.PurchasedCourses.Add(purchasedMovie);
-            customer.MoneySpent += price;
+            Rial price = CalculatePrice(customer.Status, course.LicensingModel);
+            customer.AddCourse(course,expirationDate,price);
+            
         }
 
         public bool PromoteCustomer(Customer customer)
@@ -68,8 +59,7 @@ namespace CourseStore.Services.ApplicationServices
             if (customer.PurchasedCourses.Where(x => x.PurchaseDate > DateTime.UtcNow.AddYears(-1)).Sum(x => x.Price) < 100m)
                 return false;
 
-            customer.Status = CustomerStatus.Advanced;
-            customer.StatusExpirationDate = (ExpirationDate)DateTime.UtcNow.AddYears(1);
+            customer.Status = CustomerStatus.Promote();
 
             return true;
         }

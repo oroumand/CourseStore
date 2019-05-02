@@ -10,13 +10,23 @@ namespace CourseStore.Infrastructures.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<Customer> builder)
         {
-            builder.OwnsOne(c => c.FullName,d=> {
-                d.Property(e=>e.FirstName).HasMaxLength(100).IsRequired().HasColumnName("FirstName");
-                d.Property(e=>e.LastName).HasMaxLength(100).IsRequired().HasColumnName("LastName");
+            builder.OwnsOne(c => c.FullName, d =>
+            {
+                d.Property(e => e.FirstName).HasMaxLength(100).IsRequired().HasColumnName("FirstName");
+                d.Property(e => e.LastName).HasMaxLength(100).IsRequired().HasColumnName("LastName");
             });
-            builder.Property(c => c.Email).HasConversion(c => c.Value, d =>  Core.Domain.ValueObjects.Email.Create(d).Value);
-            builder.Property(c => c.MoneySpent).HasConversion(c => c.Value, d =>  Core.Domain.ValueObjects.Rial.Create(d).Value);
-            builder.Property(c => c.StatusExpirationDate).HasConversion(c => (DateTime?)c, d => (ExpirationDate) d);
+          
+            builder.Metadata
+            .FindNavigation(nameof(Customer.PurchasedCourses))
+            .SetPropertyAccessMode(PropertyAccessMode.Field);
+            builder.Property(c => c.Email).HasConversion(c => c.Value, d => Core.Domain.ValueObjects.Email.Create(d).Value);
+            builder.Property(c => c.MoneySpent).HasConversion(c => c.Value, d => Core.Domain.ValueObjects.Rial.Create(d).Value);
+            builder.OwnsOne(c => c.Status, d =>
+            {
+                d.Property(e => e.Type).IsRequired().HasColumnName("Status");
+                d.Property(e => e.ExpirationDate).HasConversion(c=>c.Date,c=>(ExpirationDate) c).HasColumnName("StatusExpirationDate");
+            });
+            //builder.Property(c => c.StatusExpirationDate).HasConversion(c => (DateTime?)c, d => (ExpirationDate)d);
             //builder.HasData(
             //    new Customer
             //    {

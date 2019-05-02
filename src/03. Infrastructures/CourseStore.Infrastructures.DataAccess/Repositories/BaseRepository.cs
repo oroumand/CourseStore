@@ -9,7 +9,7 @@ using System.Text;
 namespace CourseStore.Infrastructures.DataAccess.Repositories
 {
     public class BaseRepository<TEntity,TDbContext> : IRepository<TEntity>
-        where TEntity:BaseEntity,new()
+        where TEntity:BaseEntity
         where TDbContext :DbContext
     {
         protected readonly TDbContext _dbContext;

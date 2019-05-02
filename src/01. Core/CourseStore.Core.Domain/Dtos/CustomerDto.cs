@@ -1,4 +1,5 @@
 ﻿using CourseStore.Core.Domain.Entities;
+using CourseStore.Core.Domain.ValueObjects;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System;
@@ -24,7 +25,7 @@ namespace CourseStore.Core.Domain.Dtos
         public string Email { get; set; }
 
         [JsonConverter(typeof(StringEnumConverter))]
-        public CustomerStatus Status { get; set; }
+        public CustomerStatusType Status { get; set; }
 
         public DateTime? StatusExpirationDate { get; set; }
 
