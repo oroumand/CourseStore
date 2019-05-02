@@ -6,8 +6,7 @@ using CourseStore.Core.Domain.Dtos;
 using CourseStore.Core.Domain.Entities;
 using CourseStore.Core.Domain.Utilities.CourseStore.Core.Domain.Utilities;
 using CourseStore.Core.Domain.ValueObjects;
-using CourseStore.Infrastructures.DataAccess.Repositories;
-using CourseStore.Services.ApplicationServices;
+
 using Microsoft.AspNetCore.Mvc;
 
 namespace CourseStore.EndPoints.WebApi.Controllers
@@ -17,13 +16,11 @@ namespace CourseStore.EndPoints.WebApi.Controllers
     {
         private readonly ICourseRepository _courseRepository;
         private readonly ICustomerRepository _customerRepository;
-        private readonly CustomerService _customerService;
 
-        public CustomersController(ICourseRepository courseRepository, ICustomerRepository customerRepository, CustomerService customerService)
+        public CustomersController(ICourseRepository courseRepository, ICustomerRepository customerRepository)
         {
             _customerRepository = customerRepository;
             _courseRepository = courseRepository;
-            _customerService = customerService;
         }
 
         [HttpGet]
@@ -154,9 +151,7 @@ namespace CourseStore.EndPoints.WebApi.Controllers
                 {
                     return BadRequest("دوره منتخب در حال حاضر ثبت شده است: " + course.Name);
                 }
-
-                _customerService.PurchaseCourse(customer, course);
-
+                customer.AddCourse(course);
                 _customerRepository.Save();
 
                 return Ok();

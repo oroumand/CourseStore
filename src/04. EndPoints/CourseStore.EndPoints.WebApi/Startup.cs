@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using CourseStore.Core.Domain.Contracts;
 using CourseStore.Infrastructures.DataAccess.DbContexts;
 using CourseStore.Infrastructures.DataAccess.Repositories;
-using CourseStore.Services.ApplicationServices;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -34,9 +33,6 @@ namespace CourseStore.EndPoints.WebApi
             services.AddDbContext<CourseStoreContext>(option=> option.UseSqlServer(Configuration.GetConnectionString("CourseStore")));
             services.AddScoped<ICourseRepository, CourseRepository>();
             services.AddScoped<ICustomerRepository, CustomerRepository>();
-            services.AddScoped<CustomerService, CustomerService>();
-            services.AddScoped<CourseService, CourseService>();
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

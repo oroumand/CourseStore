@@ -28,8 +28,10 @@ namespace CourseStore.Core.Domain.Entities
             _purchasedCourses = new HashSet<PurchasedCourse>();
         }
 
-        public void AddCourse(Course course, ExpirationDate expirationDate, Rial price)
+        public void AddCourse(Course course)
         {
+            ExpirationDate expirationDate = course.GetExpirationDate();
+            Rial price = course.CalculatePrice(Status);
             var purchasedCourse = new PurchasedCourse(course, this, price, expirationDate);
             _purchasedCourses.Add(purchasedCourse);
             MoneySpent += price;
