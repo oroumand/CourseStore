@@ -13,12 +13,11 @@ namespace CourseStore.Core.Domain.Entities
 
         public Email Email { get; set; }
 
-        [JsonConverter(typeof(StringEnumConverter))]
         public CustomerStatus Status { get; set; }
 
-        public DateTime? StatusExpirationDate { get; set; }
+        public ExpirationDate StatusExpirationDate { get; set; }
 
-        public decimal MoneySpent { get; set; }
+        public Rial MoneySpent { get; set; }
 
         public IList<PurchasedCourse> PurchasedCourses { get; set; }
 

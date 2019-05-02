@@ -1,4 +1,5 @@
 ﻿using CourseStore.Core.Domain.Entities;
+using CourseStore.Core.Domain.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
@@ -16,28 +17,9 @@ namespace CourseStore.Infrastructures.DataAccess.Configurations
                 d.Property(e => e.LastName).HasMaxLength(100).IsRequired().HasColumnName("LastName");
             });
 
-            builder.Property(c => c.Email).HasConversion(c => c.Value, d => Core.Domain.ValueObjects.Email.Create(d).Value);
-            //builder.HasData(
-            //    new Customer
-            //    {
-            //        FirstName = "محمد",
-            //        LastName = "لطفی",
-            //        Email = "mlotfi@gmail.com",
-            //        MoneySpent = 200_000,
-            //        Status = CustomerStatus.Advanced,
-            //        StatusExpirationDate = DateTime.Now.AddDays(15),
-            //        Id = 1
-            //    },
-            //    new Customer
-            //    {
-            //        FirstName = "آرش",
-            //        LastName = "اژدری",
-            //        Email = "a.Azhdari@gmail.com",
-            //        MoneySpent = 20_000,
-            //        Status = CustomerStatus.Regular,
-            //        Id = 2
-            //    }
-            //    );
+            builder.Property(c => c.Email).HasConversion(c => c.Value, d => Email.Create(d).Value);
+            builder.Property(c => c.MoneySpent).HasConversion(c => c.Value, d => Rial.of(d));
+            builder.Property(c => c.StatusExpirationDate).HasConversion(c => (DateTime?)c, d => (ExpirationDate)d);
         }
     }
 }

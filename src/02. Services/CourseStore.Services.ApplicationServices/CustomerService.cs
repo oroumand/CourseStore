@@ -1,4 +1,5 @@
 ﻿using CourseStore.Core.Domain.Entities;
+using CourseStore.Core.Domain.ValueObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,7 +43,7 @@ namespace CourseStore.Services.ApplicationServices
 
         public void PurchaseCourse(Customer customer, Course course)
         {
-            DateTime? expirationDate = _courseService.GetExpirationDate(course.LicensingModel);
+            var expirationDate = _courseService.GetExpirationDate(course.LicensingModel);
             decimal price = CalculatePrice(customer.Status, customer.StatusExpirationDate, course.LicensingModel);
 
             var purchasedMovie = new PurchasedCourse
@@ -54,13 +55,13 @@ namespace CourseStore.Services.ApplicationServices
             };
 
             customer.PurchasedCourses.Add(purchasedMovie);
-            customer.MoneySpent += price;
+            customer.MoneySpent += Rial.of(price);
         }
 
         public bool PromoteCustomer(Customer customer)
         {
             // حداقل باید در ماه گذشته 2 دوره فعال داشته باشد
-            if (customer.PurchasedCourses.Count(x => x.ExpirationDate == null || x.ExpirationDate.Value >= DateTime.UtcNow.AddDays(-30)) < 2)
+            if (customer.PurchasedCourses.Count(x => x.ExpirationDate == ExpirationDate.Infinite || x.ExpirationDate.Date >= DateTime.UtcNow.AddDays(-30)) < 2)
                 return false;
 
             // حد اقل 100 هزار تومان در طی سال گذشته هزینه کرده باشد
@@ -68,7 +69,7 @@ namespace CourseStore.Services.ApplicationServices
                 return false;
 
             customer.Status = CustomerStatus.Advanced;
-            customer.StatusExpirationDate = DateTime.UtcNow.AddYears(1);
+            customer.StatusExpirationDate = ExpirationDate.Create(DateTime.UtcNow.AddYears(1)).Value;
 
             return true;
         }

@@ -85,7 +85,7 @@ namespace CourseStore.EndPoints.WebApi.Controllers
                 var fullName = FullName.Create(item.FirstName, item.LastName);
                 var email = Email.Create(item.Email);
                 var combinationResult = Result.Combine(fullName, email);
-                if(combinationResult.IsFailure)
+                if (combinationResult.IsFailure)
                     return BadRequest(combinationResult);
                 if (_customerRepository.GetByEmail(item.Email) != null)
                 {
@@ -93,7 +93,7 @@ namespace CourseStore.EndPoints.WebApi.Controllers
                 }
                 var customer = new Customer
                 {
-                    FullName = fullName.Value,         
+                    FullName = fullName.Value,
                     Email = email.Value,
                     Id = 0,
                     Status = CustomerStatus.Regular
@@ -118,7 +118,7 @@ namespace CourseStore.EndPoints.WebApi.Controllers
                 var fullName = FullName.Create(item.FirstName, item.LastName);
                 if (fullName.IsFailure)
                     return BadRequest(fullName.Error);
-      
+
 
                 Customer customer = _customerRepository.GetById(id);
                 if (customer == null)
@@ -155,7 +155,7 @@ namespace CourseStore.EndPoints.WebApi.Controllers
                     return BadRequest("شناسه مشتری قابل قبول نیست: " + id);
                 }
 
-                if (customer.PurchasedCourses.Any(x => x.CourseId== course.Id && (x.ExpirationDate == null || x.ExpirationDate.Value >= DateTime.UtcNow)))
+                if (customer.PurchasedCourses.Any(x => x.CourseId == course.Id && (!x.ExpirationDate.IsExpired)))
                 {
                     return BadRequest("دوره منتخب در حال حاضر ثبت شده است: " + course.Name);
                 }
@@ -184,7 +184,7 @@ namespace CourseStore.EndPoints.WebApi.Controllers
                     return BadRequest("شناسه مشتری قابل قبول نیست: " + id);
                 }
 
-                if (customer.Status == CustomerStatus.Advanced && (customer.StatusExpirationDate == null || customer.StatusExpirationDate.Value < DateTime.UtcNow))
+                if (customer.Status == CustomerStatus.Advanced && (!customer.StatusExpirationDate.IsExpired))
                 {
                     return BadRequest("در حال حاضر کاربر در وضعیت پیشرفته وجود دارد.");
                 }
