@@ -1,4 +1,5 @@
 ﻿using CourseStore.Core.Domain.Entities;
+using CourseStore.Core.Domain.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
@@ -15,6 +16,7 @@ namespace CourseStore.Infrastructures.DataAccess.Configurations
             });
             builder.Property(c => c.Email).HasConversion(c => c.Value, d =>  Core.Domain.ValueObjects.Email.Create(d).Value);
             builder.Property(c => c.MoneySpent).HasConversion(c => c.Value, d =>  Core.Domain.ValueObjects.Rial.Create(d).Value);
+            builder.Property(c => c.StatusExpirationDate).HasConversion(c => (DateTime?)c, d => (ExpirationDate) d);
             //builder.HasData(
             //    new Customer
             //    {

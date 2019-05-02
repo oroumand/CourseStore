@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using CourseStore.Core.Domain.ValueObjects;
+using Newtonsoft.Json;
 using System;
 
 namespace CourseStore.Core.Domain.Entities
@@ -15,6 +16,6 @@ namespace CourseStore.Core.Domain.Entities
 
         public DateTime PurchaseDate { get; set; }
 
-        public DateTime? ExpirationDate { get; set; }
+        public ExpirationDate ExpirationDate { get; set; }
     }
 }

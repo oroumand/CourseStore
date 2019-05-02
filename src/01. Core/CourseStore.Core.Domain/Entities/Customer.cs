@@ -12,7 +12,7 @@ namespace CourseStore.Core.Domain.Entities
         public FullName FullName{ get; set; }
         public  Email Email { get; set; }
         public CustomerStatus Status { get; set; }
-        public DateTime? StatusExpirationDate { get; set; }
+        public ExpirationDate StatusExpirationDate { get; set; }
         public Rial MoneySpent { get; set; }
         public IList<PurchasedCourse> PurchasedCourses { get; set; }
     }
