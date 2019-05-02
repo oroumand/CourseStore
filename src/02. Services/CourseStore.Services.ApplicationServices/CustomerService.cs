@@ -16,35 +16,12 @@ namespace CourseStore.Services.ApplicationServices
             _courseService = courseService;
         }
 
-        private Rial CalculatePrice(CustomerStatus status, LicensingModel licensingModel)
-        {
-            Rial price;
-            switch (licensingModel)
-            {
-                case LicensingModel.TwoDays:
-                    price = Rial.of(4);
-                    break;
-
-                case LicensingModel.LifeLong:
-                    price = Rial.of(8);
-                    break;
-
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-
-            if (status.IsAdvanced)
-            {
-                price = price * 0.75m;
-            }
-
-            return price;
-        }
+        
 
         public void PurchaseCourse(Customer customer, Course course)
         {
             ExpirationDate expirationDate = course.GetExpirationDate();
-            Rial price = CalculatePrice(customer.Status, course.LicensingModel);
+            Rial price = course.CalculatePrice(customer.Status);
             customer.AddCourse(course,expirationDate,price);
             
         }

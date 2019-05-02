@@ -32,5 +32,31 @@ namespace CourseStore.Core.Domain.Entities
 
             return result;
         }
+
+
+        public Rial CalculatePrice(CustomerStatus status)
+        {
+            Rial price;
+            switch (LicensingModel)
+            {
+                case LicensingModel.TwoDays:
+                    price = Rial.of(4);
+                    break;
+
+                case LicensingModel.LifeLong:
+                    price = Rial.of(8);
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            if (status.IsAdvanced)
+            {
+                price *= 0.75m;
+            }
+
+            return price;
+        }
     }
 }
