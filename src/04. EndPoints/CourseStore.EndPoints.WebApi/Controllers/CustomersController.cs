@@ -118,7 +118,7 @@ namespace CourseStore.EndPoints.WebApi.Controllers
                     return BadRequest("شناسه مشتری قابل قبول نیست: " + id);
                 }
 
-                customer.SetFullName( fullName.Value);
+                customer.SetFullName(fullName.Value);
                 _customerRepository.Save();
 
                 return Ok();
